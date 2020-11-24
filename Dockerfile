@@ -3,10 +3,6 @@ FROM golang:1.15-buster
 # Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-# Add timezone information
-RUN echo "Europe/Amsterdam" > /etc/timezone
-ENV TZ Europe/Amsterdam
-
 ## Some dependencies for awscli
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
