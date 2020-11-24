@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: do-spaces-secret
+type: Opaque
+stringData:
+  SPACES_ACCESS_KEY: 'my-spaces-access-key'
+  SPACES_SECRET_KEY: 'my-spaces-secret-key'
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  labels:
+    app: myapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      volumes:
+        - name: shared-data
+          emptyDir: {}
+      containers:
+        - name: myapp-container
+          image: nginx
+          resources: { }
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: shared-data
+              mountPath: /var/www/
+              mountPropagation: HostToContainer
+
+        - name: do-space-mounter
+          image: filidorwiese/digitalocean-spaces-mounter:latest
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: shared-data
+              mountPath: /var/www/
+              mountPropagation: Bidirectional
+          env:
+            - name: SPACES_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: SPACES_ACCESS_KEY
+                  name: do-spaces-secret
+            - name: SPACES_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: SPACES_SECRET_KEY
+                  name: do-spaces-secret
+            - name: SPACES_REGION
+              value: "fra1"
+            - name: SPACES_NAME
+              value: "myspace"
+            - name: MOUNT_DIRECTORY
+              value: "/var/www/"
+            - name: UID
+              value: "101"
+            - name: GID
+              value: "101"
+
