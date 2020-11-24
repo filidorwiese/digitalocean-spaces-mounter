@@ -1,0 +1,26 @@
+name: Build and push
+
+on:
+  push:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to Github Container Registry
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          GH_USER: "filidorwiese"
+        run: .github/bin/docker-login-github-registry.sh
+
+      - name: Build
+        env:
+          IMAGE: "filidorwiese/digitalocean-spaces-mounter"
+          VERSION: "latest"
+          CONTEXT: "."
+        run: .github/bin/build-and-push-github-registry.sh
