@@ -41,3 +41,7 @@ services:
           propagation: slave
 
 ````
+
+## Readonly
+
+If you specificy a `READONLY` environment variable, no matter the contents, the space will be mounted as read-only.
