@@ -1,10 +1,10 @@
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-      ca-certificates curl fuse mime-support && \
+      ca-certificates curl fuse media-types && \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL -o /usr/local/bin/goofys \
