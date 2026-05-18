@@ -45,3 +45,13 @@ services:
 ## Readonly
 
 If you specificy a `READONLY` environment variable, no matter the contents, the space will be mounted as read-only.
+
+
+## Troubleshooting
+
+if running into `Transport endpoint is not connected` error locally, run:
+
+```shell
+$ sudo umount "$PWD/target"
+$ rm -rf target
+```
