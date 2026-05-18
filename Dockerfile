@@ -1,17 +1,16 @@
-FROM golang:1.23-bookworm
+FROM debian:bookworm-slim
 
-# Set debconf to run non-interactively
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+ENV DEBIAN_FRONTEND=noninteractive
 
-## Some dependencies for awscli
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-      git build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev pkg-config libssl-dev mime-support automake libtool
+      ca-certificates curl fuse mime-support && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install Goofys
-RUN go install github.com/kahing/goofys@v0.24.0
+RUN curl -fsSL -o /usr/local/bin/goofys \
+      https://github.com/kahing/goofys/releases/download/v0.24.0/goofys && \
+    chmod +x /usr/local/bin/goofys
 
-## Entry Point
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod 755 /entrypoint.sh
 CMD ["/entrypoint.sh"]
