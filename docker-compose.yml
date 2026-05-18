@@ -1,0 +1,21 @@
+version: '3.6'
+
+services:
+  myspace-mounter:
+#    image: filidorwiese/digitalocean-spaces-mounter:latest
+    build: .
+    privileged: true
+    volumes:
+      - type: bind
+        source: "${PWD}/target"
+        target: /mnt/oni-testspace
+        bind:
+          propagation: shared
+    env_file:
+      - do-spaces.env
+    environment:
+      - "SPACES_REGION=fra1"
+      - "SPACES_NAME=oni-testspace"
+      - "MOUNT_DIRECTORY=/mnt/oni-testspace"
+      - "UID=1000"
+      - "GID=1000"
