@@ -6,7 +6,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 ## Some dependencies for awscli
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-      git build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev pkg-config libssl-dev mime-support automake libtool
+      git build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev pkg-config libssl-dev mime-support automake libtool pg_dump
 
 # Install Goofys
 RUN go get github.com/kahing/goofys && \
