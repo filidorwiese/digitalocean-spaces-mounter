@@ -6,21 +6,28 @@ on:
       - "main"
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Login to Github Container Registry
-        env:
-          GH_TOKEN: ${{ secrets.GHCR_TOKEN }}
-          GH_USER: "filidorwiese"
-        run: .github/bin/docker-login-github-registry.sh
+      - uses: docker/setup-buildx-action@v3
 
-      - name: Build
-        env:
-          IMAGE: "filidorwiese/digitalocean-spaces-mounter"
-          VERSION: "latest"
-          CONTEXT: "."
-        run: .github/bin/build-and-push-github-registry.sh
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/filidorwiese/digitalocean-spaces-mounter:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
