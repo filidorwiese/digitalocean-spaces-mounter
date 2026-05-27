@@ -46,6 +46,15 @@ services:
 
 If you specificy a `READONLY` environment variable, no matter the contents, the space will be mounted as read-only.
 
+## Custom S3 endpoint
+
+By default the endpoint is derived from `SPACES_REGION` as `https://${SPACES_REGION}.digitaloceanspaces.com`. Override it via `SPACES_ENDPOINT` to use another S3-compatible provider, e.g. Hetzner Object Storage:
+
+```
+SPACES_ENDPOINT=https://fsn1.your-objectstorage.com
+SPACES_REGION=fsn1
+```
+
 
 ## Troubleshooting
 

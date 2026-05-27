@@ -8,6 +8,8 @@
 : "${UID?}"
 : "${GID?}"
 
+: "${SPACES_ENDPOINT:=https://${SPACES_REGION}.digitaloceanspaces.com}"
+
 READWRITE_FLAG="-o rw"
 if [ "${READONLY}" ]; then
   READWRITE_FLAG="-o ro"
@@ -26,7 +28,7 @@ cleanup() {
 trap 'cleanup; kill -TERM "${GOOFYS_PID}" 2>/dev/null; wait "${GOOFYS_PID}" 2>/dev/null; exit 0' SIGTERM SIGINT
 trap cleanup EXIT
 
-goofys --file-mode=0666 --endpoint="https://${SPACES_REGION}.digitaloceanspaces.com" --uid="${UID}" --gid="${GID}" -o allow_other ${READWRITE_FLAG} -f "${SPACES_NAME}" "${MOUNT_DIRECTORY}" &
+goofys --file-mode=0666 --endpoint="${SPACES_ENDPOINT}" --region="${SPACES_REGION}" --uid="${UID}" --gid="${GID}" -o allow_other ${READWRITE_FLAG} -f "${SPACES_NAME}" "${MOUNT_DIRECTORY}" &
 GOOFYS_PID=$!
 wait "${GOOFYS_PID}"
 
